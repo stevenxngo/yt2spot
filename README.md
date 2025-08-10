@@ -8,6 +8,7 @@ Download and normalize audio from YouTube or SoundCloud for use as Spotify local
 - Move processed files to a specified output directory.
 - Batch download support via a text file of URLs.
 - Download multiple URLs directly from the command line.
+- Download all tracks from a YouTube or SoundCloud playlist.
 
 ## Requirements
 - Python 3.10+
@@ -51,9 +52,19 @@ or
 python main.py -b urls.txt
 ```
 
-### Combine Command Line URLs and Batch File
+### Playlist Download
+Download all tracks from a playlist:
 ```sh
-python main.py "url1" "url2" --batch urls.txt
+python main.py --playlist "playlist_url_here"
+```
+or
+```sh
+python main.py -p "playlist_url_here"
+```
+
+### Combine Command Line URLs, Batch File, and Playlist
+```sh
+python main.py "url1" "url2" --batch urls.txt --playlist "playlist_url_here"
 ```
 All URLs will be processed.
 

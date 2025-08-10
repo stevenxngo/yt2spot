@@ -1,8 +1,23 @@
+import yt_dlp
 import argparse
 from downloader import download_audio
 from normalizer import normalize_audio
 from file_manager import move_to_folder
 from config import DEFAULT_OUTPUT_FOLDER
+
+
+def extract_playlist_urls(playlist_url):
+    ydl_opts = {
+        "extract_flat": True,
+        "quiet": True,
+        "skip_download": True,
+    }
+    with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+        info = ydl.extract_info(playlist_url, download=False)
+        if "entries" in info:
+            return [entry["url"] for entry in info["entries"]]
+        else:
+            return []
 
 
 def main():
@@ -20,6 +35,11 @@ def main():
         "-b",
         help="Path to a text file containing URLs (one per line)",
     )
+    parser.add_argument(
+        "--playlist",
+        "-p",
+        help="YouTube or SoundCloud playlist URL",
+    )
     args = parser.parse_args()
 
     output_folder = args.output if args.output else DEFAULT_OUTPUT_FOLDER
@@ -35,8 +55,13 @@ def main():
             return
     if args.url:
         urls.extend(args.url)
+    if args.playlist:
+        playlist_urls = extract_playlist_urls(args.playlist)
+        urls.extend(playlist_urls)
     if not urls:
-        print("Error: Please provide at least one URL or a batch file.")
+        print(
+            "Error: Please provide at least one URL, batch file, or playlist."
+        )
         return
 
     for url in urls:
